@@ -12,22 +12,18 @@ user_uri = os.getenv('CALENDLY_URI')
 
 # Flags for choosing what actions to perform. 
 IMPORTING_CALENDLY = False 
-IMPORTING_FILE = True
-FIXING_NAMES = True
-WRITING = True
+FIXING_NAMES = False
+UPDATE_DB = False
 
 if IMPORTING_CALENDLY:
     appts = importer.get_calendly_events(api_key, user_uri)
-elif IMPORTING_FILE:
-    appts = importer.read_event_csv("events_parsed.csv")
-
-if WRITING:
     exporter.dicts_to_csv(appts)
+else:
+    appts = importer.read_event_csv("events_parsed.csv")
 
 if FIXING_NAMES:
     appts = names.resolve_names("events_parsed.csv")
-
-if WRITING:
     exporter.dicts_to_csv(appts)
 
-#exporter.csv_to_sql("events_parsed.csv")
+if UPDATE_DB:
+    exporter.csv_to_sql("events_parsed.csv")

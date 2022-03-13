@@ -66,7 +66,7 @@ def get_calendly_events(api_key, user_uri):
     return parsed_events   
 
 def _fix_times(events):
-    """ Splits "time" key entries in ISO-8601 format into more readable 
+    """ Splits "time" key entries in ISO-8601 T/Z format into more readable 
     "date", "day", and "time" fields.
 
     Args:
@@ -86,6 +86,7 @@ def _fix_times(events):
         event['time'] = time.strftime("%-I:%M %p") 
         event['date'] = time.strftime("%F")
         event['day'] = time.strftime("%A")
+        event['datetime'] = time.strftime('%F %H:%M:%S')
     return events
 
 def _fix_lengths(events):
