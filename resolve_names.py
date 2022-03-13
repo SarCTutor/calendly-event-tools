@@ -23,6 +23,7 @@ def resolve_names(csvfile):
     
     for i in range(len(events)):
        events[i] = _resolve(events[i], students)
+    _print_fails(events)
     return events
 
 def _read_ids():
@@ -47,11 +48,12 @@ def _ask_user(event, students):
     print("----------------")
     print(f"Who is: [{event['name']}] ?")
     for i in range(1,(len(students)//10 + 2)):
+        stop = min((i*10)+1, len(students))
         _print_menu(students, i)
-        response = input(">")
+        response = input(f"Choice [{(i-1)*10+1}-{i*10}] >")
         if response == "n":
             continue
-        elif int(response) in range((i-1)*10,i*10):
+        elif int(response) in range((i-1)*10+1,stop):
             event['id']=int(response)
             break
     return event
@@ -65,3 +67,14 @@ def _print_menu(data, pagination=1):
         print(f"[{data[i]['id']}] {data[i]['name']}")
     print(f"\n[n] Next")
     print("----------------")
+
+def _print_fails(events):
+    """ Prints out a list of students who could not be matched to an ID number. """
+    fails = []
+    for event in events:
+        if event['id'] == "Unknown":
+            fails.append(event['name'])
+    if len(fails) > 0:
+        print(f"Couldn't match:")
+        for fail in fails:
+            print(f" - {fail}")

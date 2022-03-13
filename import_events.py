@@ -23,7 +23,7 @@ def read_event_csv(csvfile):
         reader = csv.DictReader(f)
         return list(reader)
 
-def get_eget_calendly_eventsvents_calendly(api_key, user_uri):
+def get_calendly_events(api_key, user_uri):
     """Gets all current (not-cancelled) appointments from calendly
     and returns them as a list of dicts containing the event files.
 
@@ -60,6 +60,9 @@ def get_eget_calendly_eventsvents_calendly(api_key, user_uri):
     # Split the time field into time, date, day
     parsed_events = _fix_times(parsed_events)
 
+    # Correct durations to be integers
+    parsed_events = _fix_lengths(parsed_events)
+
     return parsed_events   
 
 def _fix_times(events):
@@ -80,9 +83,15 @@ def _fix_times(events):
         time = datetime.strptime(raw_time, date_format)
         time = time.replace(tzinfo=from_zone)
         time = time.astimezone(to_zone)
-        event['time'] = time.strftime("%I:%M %p %Z") 
-        event['date'] = time.strftime("%b %d")
+        event['time'] = time.strftime("%-I:%M %p") 
+        event['date'] = time.strftime("%F")
         event['day'] = time.strftime("%A")
+    return events
+
+def _fix_lengths(events):
+    """ Fixes the lengths to be just numbers. """
+    for event in events:
+        event['length'] = event['type'][:2]
     return events
 
 def _write_raw_to_dict(events):
