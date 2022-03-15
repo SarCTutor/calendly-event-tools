@@ -17,8 +17,8 @@ def csv_to_sql(csvfile):
     conn = sqlite3.connect(filepath)
     df = pandas.read_csv(csvfile)
     df = df[["id", "datetime", "length"]]
-    df = df.rename(columns={"id": "Student_ID", "datetime": "Date_Time", "length": "Length"})
-    print(df.head())
+    df.rename(columns={"id": "Student_ID", "datetime": "Date_Time", "length": "Length"}, inplace=True)
+    df.drop(df[df.Student_ID == "Unknown"].index, inplace=True)
     return df.to_sql("Sessions", conn, if_exists='append', index=False)
 
 def dicts_to_csv(events):

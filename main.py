@@ -11,9 +11,9 @@ api_key = os.getenv('CALENDLY_API_KEY')
 user_uri = os.getenv('CALENDLY_URI')
 
 # Flags for choosing what actions to perform. 
-IMPORTING_CALENDLY = False 
-FIXING_NAMES = False
-UPDATE_DB = False
+IMPORTING_CALENDLY = True 
+FIXING_NAMES = True
+UPDATE_DB = True
 
 if IMPORTING_CALENDLY:
     appts = importer.get_calendly_events(api_key, user_uri)
