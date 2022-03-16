@@ -17,8 +17,7 @@ def import_week(week=None):
     df.rename(columns={"id": "Student_ID", "datetime": "Date_Time", "length": "Length"}, inplace=True)
     df.drop(df[df.Student_ID == "Unknown"].index, inplace=True)
     df.dropna(inplace=True)
-    count = _to_sql(df)
-    print(f"Pushed {count} appointments to server.")
+    return _to_sql(df)
 
 def _generate_times(appts):
     for apt in appts:
