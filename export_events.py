@@ -35,3 +35,4 @@ def dicts_to_csv(events):
     eventfile.writeheader()
     for eventdict in events:
         eventfile.writerow(eventdict)
+    return len(events)
