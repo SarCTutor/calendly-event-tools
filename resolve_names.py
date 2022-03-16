@@ -41,6 +41,7 @@ def _resolve(event, students):
             event['id'] = students[i]['id']
             return event
 
+    event['id'] = "Unknown"
     return _ask_user(event, students)
 
 def _ask_user(event, students):

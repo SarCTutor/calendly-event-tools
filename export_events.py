@@ -12,7 +12,7 @@ def csv_to_sql(csvfile):
     Args:
         csvfile (str): the filename of the CSV to read from
     """
-    filepath = os.path.abspath('/Users/sarc/Code/SQLite/Tutoring.db')
+    filepath = os.path.abspath(os.getenv('SQL_PATH'))
     assert os.path.exists(filepath), "The file doesn't exist"
     conn = sqlite3.connect(filepath)
     df = pandas.read_csv(csvfile)
