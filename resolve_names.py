@@ -1,23 +1,43 @@
 """ Provides functionality for converting student names to IDs.
-See resolve_names() for more info.
+
+Functions:
+    resolve_names(str) : list[Event]
 """
 import csv
 from simple_term_menu import TerminalMenu
 from import_events import read_event_csv
+from typing import List, Dict
+
+""" Custom Defined Types
+
+Event : Dict[str,str]
+    Dictionary representing a single event.
+    Required key(s): 'name'
+    Created key(s): 'id'
+
+Student : Dict[str,str]
+    Dictionary representing a single student.
+    All values are considered valid aliases for student.
+    Required key(s): 'id'
+"""
+Event = Dict[str,str]
+Student = Dict[str,str]
 
 LOOKUP_TABLE = "id_name.csv"
 
-def resolve_names(csvfile):
+def resolve_names(csvfile: str) -> List[Event]:
     """ Resolves student names into their corresponding unique IDs.  
 
     First, checks a lookup table of known names/aliases.
     If no match is found, the user is given a menu to select a student.
 
     Args:
-        csvfile (str): The file containing the event data to process.
+        csvfile : str
+            The file containing the event data to process.
 
     Returns:
-        list(dict): A list of dictionaries representing the processed event data.
+        List[Event] : A list of dictionaries representing the processed 
+                      event data.
     """
     events = read_event_csv(csvfile)
     students = _read_ids()
@@ -27,14 +47,22 @@ def resolve_names(csvfile):
     _print_fails(events)
     return events
 
-def _read_ids():
-    """ Reads student IDs and known names from file. """
+def _read_ids() -> List[Student]:
+    """ Reads student IDs and known names from file. 
+    
+    Returns:
+        List[Student] : A list of dictionaries with IDs and student aliases.
+    """
     with open(LOOKUP_TABLE, "r") as f:
         students = list(csv.DictReader(f))
         return students
         
-def _resolve(event, students):
-    """ Resolves one event's student Name into an ID. """
+def _resolve(event: Event, students: List[Student]) -> Event:
+    """ Resolves one event's student Name into an ID. 
+    event['id'] is set to either:
+        A matched student ID 
+        "Unknown", if no ID matches
+    """
     name = event['name']
     
     for i in range(len(students)):
@@ -45,28 +73,37 @@ def _resolve(event, students):
     event['id'] = "Unknown"
     return _ask_user(event, students)
 
-def _ask_user(event, students):
-    """ Asks the user to identify the student in the given event. """
+def _ask_user(event: Event, students: List[Student]) -> Event:
+    """ Asks the user to identify the student in the given event. 
+    Assigns "Unknown" if no ID is matched.
+    """
     menu_title = f"Who is: [{event['name']}]? (ESC if Not Found)"
+    guide_text = f"Press <j/k>, <arrows> for selection and <enter> to accept"
 
+    # Set the event ID to "Unknown" by default.
+    event['id'] = "Unknown"
+
+    # Generate list of 10-student chunks as formatted strings.
     choice_strings = []
     for i in range(0, len(students)):
         id = int(students[i]['id'])
         choice_strings.append(f"[{id:02d}] {students[i]['name']}")
-    choices_list=[choice_strings[i:i + 10] for i in range(0, len(choice_strings), 10)]
+    choices_list=[choice_strings[i:i + 10] \
+        for i in range(0, len(choice_strings), 10)]
     
+    # Display a page of 10 students and try to find a match.
     for choices in choices_list:
-        menu = TerminalMenu(choices, 
-                            title=menu_title,
-                            status_bar="Press <j/k>, <arrows> for selection and <enter> to accept")
+        menu = TerminalMenu(choices, title=menu_title, status_bar=guide_text)
         chosen = menu.show()
-        if chosen != None:
+        if chosen != None: # Match found!
             event['id']=int(chosen)+1
             print(f"Assigning {int(chosen)+1} to {event['name']}")
             break
+
+    # Return the event.
     return event
 
-def _print_fails(events):
+def _print_fails(events : List[Event]) -> None:
     """ Prints out a list of students who could not be matched to an ID number. """
     fails = []
     for event in events:
