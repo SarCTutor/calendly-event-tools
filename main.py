@@ -38,7 +38,7 @@ def main():
         print(f"\nResolving names...\n")
         appts = names.resolve_names("events_parsed.csv")
         count = exporter.dicts_to_csv(appts)
-        print(f"Wrote [{count}] events to [events_parsed.csv].")
+        print(f"\nWrote [{count}] events to [events_parsed.csv].")
 
     if 2 in chosen_entries:
         print(f"\nPushing events from [events_parsed.csv] to SQL...")

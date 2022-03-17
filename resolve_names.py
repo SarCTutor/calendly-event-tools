@@ -2,6 +2,7 @@
 See resolve_names() for more info.
 """
 import csv
+from simple_term_menu import TerminalMenu
 from import_events import read_event_csv
 
 LOOKUP_TABLE = "id_name.csv"
@@ -46,28 +47,24 @@ def _resolve(event, students):
 
 def _ask_user(event, students):
     """ Asks the user to identify the student in the given event. """
-    print("----------------")
-    print(f"Who is: [{event['name']}] ?")
-    for i in range(1,(len(students)//10 + 2)):
-        stop = min((i*10)+1, len(students))
-        _print_menu(students, i)
-        response = input(f"Choice [{(i-1)*10+1}-{i*10}] >")
-        if response == "n":
-            continue
-        elif int(response) in range((i-1)*10+1,stop):
-            event['id']=int(response)
+    menu_title = f"Who is: [{event['name']}]? (ESC if Not Found)"
+
+    choice_strings = []
+    for i in range(0, len(students)):
+        id = int(students[i]['id'])
+        choice_strings.append(f"[{id:02d}] {students[i]['name']}")
+    choices_list=[choice_strings[i:i + 10] for i in range(0, len(choice_strings), 10)]
+    
+    for choices in choices_list:
+        menu = TerminalMenu(choices, 
+                            title=menu_title,
+                            status_bar="Press <j/k>, <arrows> for selection and <enter> to accept")
+        chosen = menu.show()
+        if chosen != None:
+            event['id']=int(chosen)+1
+            print(f"Assigning {int(chosen)+1} to {event['name']}")
             break
     return event
-
-def _print_menu(data, pagination=1):
-    """ Prints a menu containing potential student names. """
-    start = (10*(pagination-1))
-    end = min(start + 10, len(data))
-    print("----------------")
-    for i in range(start, end):
-        print(f"[{data[i]['id']}] {data[i]['name']}")
-    print(f"\n[n] Next")
-    print("----------------")
 
 def _print_fails(events):
     """ Prints out a list of students who could not be matched to an ID number. """
