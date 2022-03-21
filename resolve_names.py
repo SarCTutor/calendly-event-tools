@@ -4,26 +4,9 @@ Functions:
     resolve_names(str) : list[Event]
 """
 import csv
+from constants import List, Event, Student, LOOKUP_TABLE
 from simple_term_menu import TerminalMenu
 from import_events import read_event_csv
-from typing import List, Dict
-
-""" Custom Defined Types
-
-Event : Dict[str,str]
-    Dictionary representing a single event.
-    Required key(s): 'name'
-    Created key(s): 'id'
-
-Student : Dict[str,str]
-    Dictionary representing a single student.
-    All values are considered valid aliases for student.
-    Required key(s): 'id'
-"""
-Event = Dict[str,str]
-Student = Dict[str,str]
-
-LOOKUP_TABLE = "id_name.csv"
 
 def resolve_names(csvfile: str) -> List[Event]:
     """ Resolves student names into their corresponding unique IDs.  
@@ -92,19 +75,21 @@ def _ask_user(event: Event, students: List[Student]) -> Event:
         for i in range(0, len(choice_strings), 10)]
     
     # Display a page of 10 students and try to find a match.
+    page = 0
     for choices in choices_list:
         menu = TerminalMenu(choices, title=menu_title, status_bar=guide_text)
         chosen = menu.show()
         if chosen != None: # Match found!
-            event['id']=int(chosen)+1
-            print(f"Assigning {int(chosen)+1} to {event['name']}")
+            event['id']=int(chosen)+1+(10*page)
+            print(f"Assigning {event['id']} to {event['name']}")
             break
+        page += 1
 
     # Return the event.
     return event
 
 def _print_fails(events : List[Event]) -> None:
-    """ Prints out a list of students who could not be matched to an ID number. """
+    """ Prints out students who could not be matched to an ID number. """
     fails = []
     for event in events:
         if event['id'] == "Unknown":
