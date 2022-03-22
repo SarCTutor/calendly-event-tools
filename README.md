@@ -62,6 +62,7 @@
 
 <br>
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 This is a script set for automating various operations involving importing events from Calendly, processing them, and uploading them to a SQL database.
