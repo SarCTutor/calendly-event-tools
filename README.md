@@ -48,10 +48,11 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#environment-setup">Environment Setup</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#usage">Usage</a> </li>
+    <li><a href="#csv-formats">CSV Formats</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -142,16 +143,16 @@ By default, the program can be run by executing the file `main.py`.  This provid
 3. Push new event entries to SQL
 4. Generate regular appointment entries
 
-### 1. Retrieve from Calendly
+### Retrieve from Calendly
 This operation connects to Calendly and retrieves all appointment information from today's date onwards.  It is saved to `events_parsed.csv`.  
 
-### 2. Process names to IDs.
+### Process names to IDs.
 [TODO]
 
-### 3. Push new event entries to SQL
+### Push new event entries to SQL
 [TODO]
 
-### 4. Generate regular appointment entries
+### Generate regular appointment entries
 [TODO]
 
 
