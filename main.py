@@ -47,7 +47,7 @@ def main():
 
     if 3 in chosen_entries:
         date_entry = input('Enter a date in YYYY-MM-DD format: ')
-        print(f"\nPushing events from [events_parsed.csv] to SQL...")
+        print(f"\nPushing events from [regular_events.csv] to SQL...")
         count = regulars.import_week(date_entry)
         print(f"Pushed [{count}] recurring events to SQL database.")
 
