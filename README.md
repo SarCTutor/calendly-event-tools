@@ -81,8 +81,7 @@ This is a script set for automating various operations involving importing event
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+As a set of Python scripts, the main thing you will need is a Python3 installation and the required prerequisite modules.  
 
 ### Prerequisites
 
@@ -95,7 +94,7 @@ All libraries are available through [pip](https://pypi.org/project/pip/).
 
 ### Installation
 
-1. Install all listed prerequisites using `pip` (or a package manager of your choice.)
+1. Install all listed prerequisites using `pip` (or a package manager of your choice)
    
 2. Clone the repo
    ```sh
@@ -148,19 +147,54 @@ By default, the program can be run by executing the file `main.py`.  This provid
 This operation connects to Calendly and retrieves all appointment information from today's date onwards.  It is saved to `events_parsed.csv`.  
 
 ### Process names to IDs.
-[TODO]
+This operation loads the event data from `events_parsed.csv` and attempts to populate the `id` column with user IDs.  
+
+Names are matched to IDs based on a lookup table, `id_names.csv`.
+
+If no match is found for a user's name, a menu of possible names is shown to the user to choose from.  If there is still no match, the `id` is set to `"Unknown"`.
+
+All data is saved back to `events_parsed.csv`.
 
 ### Push new event entries to SQL
-[TODO]
+
+Pushes event entries from `events_parsed.csv` to a SQL server with columns `Student_ID`, `Date_Time`, and `Length`.
+
+Most of this logic is handled by [pandas.DataFrame.to_sql](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_sql.html).
 
 ### Generate regular appointment entries
-[TODO]
 
+Allows for population of SQL database with regular recurring sessions that are _not_ booked through Calendly.  Takes events from `regular_events.csv`, and a start date, and generates all appointments through that week (start date -> Sunday).
+
+Example usage:
+```ssh
+[*] Generate regular appointment entries
+
+Enter a date in YYYY-MM-DD format: 2022-03-21
+
+Pushing events from [regular_events.csv] to SQL...
+
+Pushed 2 recurring events to SQL database.
+```
+In this example, given a start date of Tuesday March 22nd, the appointments would be added on Wednesday the 23rd, and Thursday the 24th.  
 
 <!-- CSV FILE INFO -->
 ## CSV Formats
 
-[TODO]
+### events_parsed.csv
+
+### id_name.csv
+
+### regular_events.csv
+
+
+
+
+Example `regular_events.csv`: 
+```csv
+name,day,time,length
+Alice,Wednesday,10:00,60
+Bob,Thursday,14:30,60
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
