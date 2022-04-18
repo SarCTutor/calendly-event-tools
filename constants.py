@@ -15,5 +15,8 @@ Student : Dict[str,str]
 Event = Dict[str,str]
 Student = Dict[str,str]
 
+"""
+Filenames
+"""
 REGULAR_EVENTS = "regular_events.csv"
 LOOKUP_TABLE = "id_name.csv"
