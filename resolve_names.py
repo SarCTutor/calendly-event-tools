@@ -28,6 +28,7 @@ def resolve_names(csvfile: str) -> List[Event]:
     for i in range(len(events)):
        events[i] = _resolve(events[i], students)
     _print_fails(events)
+    _write_ids(students)
     return events
 
 def _read_ids() -> List[Student]:
@@ -39,6 +40,21 @@ def _read_ids() -> List[Student]:
     with open(LOOKUP_TABLE, "r") as f:
         students = list(csv.DictReader(f))
         return students
+
+def _write_ids(students : List[Student]) -> None:
+    """ Writes student IDs and known names to file. 
+    Important because new names might have been learned.
+    
+    Args:
+        students : List[Student]
+            A list of dictionaries with IDs and student aliases.
+    """
+    keys = ['id', 'name', 'alt1', 'alt2', 'alt3', 'alt4', 'alt5']
+    with open(LOOKUP_TABLE, 'w', newline='') as f:
+        dict_writer = csv.DictWriter(f, keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(students)
+
         
 def _resolve(event: Event, students: List[Student]) -> Event:
     """ Resolves one event's student Name into an ID. 
@@ -82,6 +98,7 @@ def _ask_user(event: Event, students: List[Student]) -> Event:
         if chosen != None: # Match found!
             event['id']=int(chosen)+1+(10*page)
             print(f"Assigning {event['id']} to {event['name']}")
+            _remember_match(event['id'], event['name'], students)
             break
         page += 1
 
@@ -98,3 +115,12 @@ def _print_fails(events : List[Event]) -> None:
         print(f"Couldn't match:")
         for fail in fails:
             print(f" - {fail}")
+
+def _remember_match(id : int, alias : str, students : List[Student]) -> None:
+    student = students[id-1]
+    for i in range(1,6): 
+        if not student["alt"+str(i)]:
+            student["alt"+str(i)] = alias 
+            print(f"Remembering that \"{alias}\" is {student['name']}\n")
+            return
+    print(f"{student['name']} is out of alias space!")
